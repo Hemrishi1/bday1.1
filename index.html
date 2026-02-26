@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🎂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-rose-100 min-h-screen overflow-hidden font-sans">
+
+    <!-- Audio Element (Optional - add your music file) -->
+    <audio id="bgMusic" loop>
+        <source src="happy_birthday.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Section 1: Welcome/Entry Screen -->
+    <div id="welcomeScreen" class="fixed inset-0 flex flex-col items-center justify-center z-50 bg-gradient-to-br from-rose-200 via-pink-200 to-purple-200 transition-opacity duration-1000">
+        <div class="text-center space-y-8 animate-fade-in">
+            <div class="relative">
+                <i data-lucide="heart" class="w-24 h-24 text-rose-500 animate-pulse mx-auto"></i>
+                <div class="absolute inset-0 blur-xl bg-rose-400 opacity-50 rounded-full animate-ping"></div>
+            </div>
+            <h1 class="romance-title text-5xl md:text-7xl font-bold text-gray-800 tracking-tight">
+                A Special Journey
+            </h1>
+            <p class="text-lg text-gray-600 max-w-md mx-auto px-4">
+                Click anywhere to begin a magical journey through memories...
+            </p>
+            <button id="startBtn" class="mt-8 px-8 py-4 bg-rose-500 text-white rounded-full font-semibold text-lg shadow-lg hover:bg-rose-600 hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                Click to Start
+            </button>
+        </div>
+    </div>
+
+    <!-- Section 2: Slideshow -->
+    <div id="slideshowScreen" class="fixed inset-0 hidden z-40 bg-gradient-to-br from-pink-100 via-purple-100 to-rose-100" style="display: none;">
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gray-800 z-50">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-rose-400 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <!-- Slide Counter -->
+        <div class="absolute top-4 right-4 z-50 text-white/70 text-sm font-medium bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
+            <span id="currentSlide">1</span> / <span id="totalSlides">5</span>
+        </div>
+
+        <!-- Main Image Container -->
+        <div class="relative w-full h-full flex items-center justify-center">
+            <img id="slideImage" src="" alt="Memory" class="max-w-full max-h-full object-contain transition-all duration-700 opacity-0 scale-95">
+            
+            <!-- Text Overlay -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 md:p-12">
+                <p id="slideText" class="text-white text-xl md:text-3xl font-light text-center leading-relaxed opacity-0 transform translate-y-4 transition-all duration-700"></p>
+            </div>
+
+            <!-- Click Indicator -->
+            <div id="clickHint" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-sm animate-bounce flex items-center gap-2">
+                <span>Click to continue</span>
+                <i data-lucide="mouse-pointer-click" class="w-4 h-4"></i>
+            </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-50" id="navDots"></div>
+
+        <!-- Back Button -->
+        <button id="backBtn" onclick="prevSlide()" class="absolute top-1/2 left-4 transform -translate-y-1/2 z-50 w-12 h-12 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 opacity-0 pointer-events-none">
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <!-- Section 3: Birthday Finale -->
+    <div id="birthdayScreen" class="fixed inset-0 hidden z-30 overflow-y-auto bg-gradient-to-br from-rose-100 via-pink-100 to-purple-100">
+        <!-- Confetti Canvas -->
+        <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+        <div class="min-h-screen flex flex-col items-center justify-center p-4 relative">
+            <!-- Floating Hearts Background -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none" id="floatingHearts"></div>
+
+            <!-- Main Content -->
+            <div class="text-center space-y-8 max-w-4xl mx-auto relative z-10">
+                <!-- Birthday Badge -->
+                <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg mb-4 animate-float">
+                    <i data-lucide="cake" class="w-6 h-6 text-rose-500"></i>
+                    <span class="text-gray-700 font-semibold">Special Day</span>
+                </div>
+
+                <!-- Main Title -->
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-rose-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-title">
+                    Happy Birthday
+                </h1>
+
+                <!-- Final Image Layout -->
+                <div class="final-layout mt-10 mb-8 cursor-pointer" onclick="createHeartBurst(event)">
+                    <img id="finalImage" src="http://static.photos/people/640x360/42" alt="Birthday Girl" class="final-circle-image">
+                    <div class="final-script-text mt-4">
+                        Happy Birthday<br>
+                        <span id="birthdayName" class="final-script-name">My Special Someone</span>
+                    </div>
+                </div>
+
+                <!-- Birthday Message -->
+                <div class="bg-white/70 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl max-w-2xl mx-auto transform hover:scale-102 transition-all duration-300">
+                    <p class="text-lg md:text-xl text-gray-700 leading-relaxed italic">
+                        "Wishing you a day filled with love, laughter, and countless beautiful moments. You deserve all the happiness(Me😆) in the world. Ek saal aur buddhi ho gyi ab toh tu, jyada mt socha kr, Khud ka dhyaan rkha kr, life enjoy kia kr tnsn nkko lene ka re... Once again HAPPY BIRTHDAY KUTTIYAAA 🎉✨"
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 justify-center mt-8">
+                    <button onclick="restartSlideshow()" class="px-6 py-3 bg-white text-gray-700 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
+                        Watch Again
+                    </button>
+                    <button onclick="createHeartBurst(event)" class="px-6 py-3 bg-gradient-to-r from-rose-500 to-purple-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="heart" class="w-5 h-5"></i>
+                        Send Love
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
